@@ -18,7 +18,7 @@ Port Claude Code vibe-workflow commands to OpenAI Codex skills format. Using the
 | 8 | `$review-docs` | `/review-docs` + agent | Pending |
 | 9 | `$review-agents-md` | `/review-claude-md-adherence` | Pending |
 | 10 | `$fix-review-issues` | `/fix-review-issues` command | Pending |
-| 11 | `$research` | `/web-research` + `web-researcher` agent | Pending |
+| 11 | `$web-research` | `/web-research` + `web-researcher` agent | Pending |
 
 ## NOT Migrating
 
@@ -52,7 +52,7 @@ codex-workflow/
 │   │   └── SKILL.md
 │   ├── fix-review-issues/
 │   │   └── SKILL.md
-│   └── research/
+│   └── web-research/
 │       └── SKILL.md
 ├── docs/
 │   ├── CUSTOMER.md

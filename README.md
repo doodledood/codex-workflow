@@ -48,7 +48,7 @@ codex --enable skills
 ### Utilities
 
 - **`$fix-review-issues`** - Orchestrate fixing issues found by review skills
-- **`$research`** - Web research with structured hypothesis tracking
+- **`$web-research`** - Web research with structured hypothesis tracking
 
 ## Repository Structure
 
