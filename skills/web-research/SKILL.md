@@ -1,6 +1,8 @@
 ---
 name: web-research
 description: "Conduct structured web research with hypothesis tracking. Synthesizes information from multiple sources into actionable findings. Use for technical research, API docs, best practices. Triggers: web research, look up, search for, find documentation."
+metadata:
+  short-description: "Structured web research"
 ---
 
 **User request**: $ARGUMENTS

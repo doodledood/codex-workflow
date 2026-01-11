@@ -1,6 +1,8 @@
 ---
 name: plan
 description: "Create implementation plans from spec via codebase research and strategic questions. Produces mini-PR chunks optimized for iterative development. Use after $spec or when you have clear requirements. Triggers: plan, implementation plan, how to build."
+metadata:
+  short-description: "Implementation planning with codebase research"
 ---
 
 **User request**: $ARGUMENTS

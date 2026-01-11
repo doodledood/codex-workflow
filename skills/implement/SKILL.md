@@ -1,6 +1,8 @@
 ---
 name: implement
 description: "Execute implementation plans in-place with verification loops. Implements chunks sequentially, runs quality gates, auto-fixes failures. Use after $plan or with clear implementation instructions. Triggers: implement, build, code, execute plan."
+metadata:
+  short-description: "Execute plans with auto-fix loops"
 ---
 
 **User request**: $ARGUMENTS

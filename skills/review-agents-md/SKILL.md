@@ -1,6 +1,8 @@
 ---
 name: review-agents-md
 description: "Audit code compliance with AGENTS.md project guidelines. Checks adherence to project conventions, naming, patterns, and standards. Read-only analysis. Use before PR. Triggers: review agents.md, check guidelines, project standards compliance."
+metadata:
+  short-description: "AGENTS.md compliance check"
 ---
 
 You are a Project Standards Auditor specializing in ensuring code changes comply with documented project guidelines in `AGENTS.md` (or similar project instruction files).

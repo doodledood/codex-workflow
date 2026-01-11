@@ -1,6 +1,8 @@
 ---
 name: fix-review-issues
 description: "Orchestrate fixing issues found by review skills. Takes review report as input, creates fix plan, and implements fixes with verification. Use after running review skills. Triggers: fix review issues, fix findings, address review feedback."
+metadata:
+  short-description: "Fix issues from code reviews"
 ---
 
 **User request**: $ARGUMENTS

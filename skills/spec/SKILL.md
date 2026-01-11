@@ -1,6 +1,8 @@
 ---
 name: spec
 description: "Build requirements specification through structured discovery interview. Use when starting a new feature, defining scope, gathering requirements, or specifying WHAT work should accomplish. Triggers: spec, requirements, define scope, what to build."
+metadata:
+  short-description: "Interactive requirements builder"
 ---
 
 **User request**: $ARGUMENTS

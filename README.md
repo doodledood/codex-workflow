@@ -13,9 +13,42 @@ Experienced developers frustrated by hype-driven AI coding tools. If you're tire
 
 ## Installation
 
+### Via Skill Installer (Recommended)
+
+Install individual skills using `$skill-installer`:
+
+```
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/spec
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/plan
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/implement
+```
+
+Or install all skills:
+```
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/spec
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/plan
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/implement
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/review-bugs
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/review-coverage
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/review-type-safety
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/review-maintainability
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/review-docs
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/review-agents-md
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/fix-review-issues
+$skill-installer install https://github.com/doodledood/codex-workflow/tree/main/skills/web-research
+```
+
+Restart Codex after installing to pick up new skills.
+
+### Manual Installation
+
 Copy skills to your Codex skills directory:
 
 ```bash
+# Clone repo
+git clone https://github.com/doodledood/codex-workflow.git
+cd codex-workflow
+
 # User-scoped (applies to all repos)
 cp -r skills/* ~/.codex/skills/
 
@@ -23,7 +56,7 @@ cp -r skills/* ~/.codex/skills/
 cp -r skills/* .codex/skills/
 ```
 
-Enable skills:
+Enable skills if not already enabled:
 ```bash
 codex --enable skills
 ```
