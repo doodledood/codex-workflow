@@ -7,25 +7,58 @@ metadata:
 
 **User request**: $ARGUMENTS
 
-Orchestrate fixing issues identified by review skills (`$review-bugs`, `$review-coverage`, `$review-maintainability`, etc.).
+Orchestrate fixing issues identified by review skills (`$review-bugs`, `$review-coverage`, `$review-maintainability`, `$review-type-safety`, `$review-docs`, `$review-agents-md`).
+
+**Output file**: `/tmp/fix-progress-{YYYYMMDD-HHMMSS}.md`
 
 ## Phase 1: Parse Review Report
 
-### 1.1 Identify input
+### 1.1 Identify Input
 
-**If review report provided**: Parse issues from the report.
+**Priority order:**
+1. **Review report provided** (markdown content or file path) → parse issues
+2. **Issue list provided** (inline) → parse directly
+3. **Neither** → ask user: "Please provide a review report or run a review skill first (e.g., `$review-bugs`, `$review-coverage`)"
 
-**If no report**: Ask user which review to run first, or specify issues to fix.
+### 1.2 Extract Issues
 
-### 1.2 Extract issues
+From review report, extract each issue with:
+- **Severity**: Critical | High | Medium | Low
+- **Location**: file:line (if available)
+- **Category**: bugs | coverage | maintainability | type-safety | docs | agents-md
+- **Description**: Clear statement of the issue
+- **Suggested fix**: From reviewer (if provided)
+- **Evidence**: Code snippet showing the problem
 
-From the review report, extract:
-- Issue severity (Critical, High, Medium, Low)
-- Issue location (file:line)
-- Issue description
-- Suggested fix (if provided)
+**Deduplication**: If same file:line appears multiple times with similar descriptions, merge into single issue.
 
-### 1.3 Create fix plan
+### 1.3 Create Progress File
+
+Path: `/tmp/fix-progress-{YYYYMMDD-HHMMSS}.md`
+
+```markdown
+# Fix Progress: {review type}
+Started: {timestamp}
+Source: {review report path or "inline"}
+
+## Issues to Fix
+
+### Critical
+- [ ] {file}:{line} - {description}
+
+### High
+- [ ] {file}:{line} - {description}
+
+### Medium
+- [ ] {file}:{line} - {description}
+
+### Low
+- [ ] {file}:{line} - {description}
+
+## Fix Log
+```
+
+### 1.4 Create Todo List
 
 Use `update_plan` to create prioritized todo list:
 
@@ -38,82 +71,126 @@ Use `update_plan` to create prioritized todo list:
 
 **Priority order**: Critical → High → Medium → Low
 
+**Scope boundary**: Only fix issues from this review. If you notice other problems while fixing, do NOT fix them—note them in "Observations" section of progress file for future review.
+
 ## Phase 2: Fix Loop
 
 For each issue, in priority order:
 
-### 2.1 Mark in progress
+### 2.1 Mark In Progress
 
-Update todo status.
+Update todo status and progress file.
 
-### 2.2 Read context
+### 2.2 Read Context
 
-Read the full file containing the issue. Understand the context before making changes.
+Read the full file containing the issue. Understand the context before making changes:
+- What is the function/component doing?
+- What are the existing patterns?
+- What might the fix affect?
 
-### 2.3 Implement fix
+### 2.3 Implement Fix
 
 Apply the fix following:
-- Suggested fix from review (if provided)
-- Minimal change principle
-- Existing code patterns
+- Suggested fix from review (if provided and appropriate)
+- Minimal change principle (smallest change that fixes the issue)
+- Existing code patterns and style
 
-### 2.4 Verify fix
+**Fix strategies by category:**
+
+| Category | Strategy |
+|----------|----------|
+| **Bugs** | Add guards, fix logic, handle edge cases |
+| **Coverage** | Write suggested test, verify it catches the issue |
+| **Maintainability** | Extract function, remove duplication, simplify |
+| **Type Safety** | Add types, narrow types, remove `any` |
+| **Docs** | Update docs/comments to match code |
+| **AGENTS.md** | Follow documented patterns |
+
+### 2.4 Verify Fix
 
 **For bug fixes**:
-- Confirm the bug condition is handled
+- Confirm the bug condition is now handled
+- Trace through the fix mentally
 - Run related tests if they exist
 
 **For coverage fixes**:
 - Write the suggested test
 - Run the test to verify it passes
+- Verify test would fail without the fix
 
 **For maintainability fixes**:
 - Confirm duplication is removed / code is simplified
 - Ensure no new issues introduced
+- Check that behavior is unchanged
 
 **For type safety fixes**:
-- Run type checker
+- Run type checker (`tsc --noEmit`)
 - Confirm type errors resolved
+- Verify no new type errors introduced
 
 **For doc fixes**:
-- Update documentation
-- Verify accuracy against code
+- Verify docs now match code behavior
+- Check examples still work
+- Confirm no new inaccuracies
 
-### 2.5 Run quality gates
+**For AGENTS.md fixes**:
+- Verify compliance with quoted rule
+- Check related rules weren't violated
+
+### 2.5 Run Quality Gates
 
 After each fix:
 ```bash
 # Run applicable quality checks
-# tsc --noEmit (TypeScript)
-# npm run lint
-# npm test
+# TypeScript: tsc --noEmit
+# Lint: npm run lint
+# Tests: npm test
 ```
 
-### 2.6 Handle failures
+**Gate detection**: Check AGENTS.md first, then package.json scripts, then config files.
+
+### 2.6 Handle Failures
 
 **If gates fail**:
 1. Analyze the error
-2. Fix the issue
-3. Re-run gates
-4. Max 5 attempts before escalating
+2. Identify root cause (fix introduced new issue vs pre-existing)
+3. Fix the issue
+4. Re-run gates
+5. Max 5 attempts before escalating
 
-### 2.7 Mark complete
+**Same-error detection**: If same error persists after fix attempt, escalate immediately.
+
+### 2.7 Log Completion
+
+Update progress file:
+
+```markdown
+### {timestamp} - Fixed: {issue description}
+- File: {path}
+- Change: {what was changed}
+- Verification: {how verified}
+- Gates: PASS
+```
+
+### 2.8 Mark Complete
 
 Update todo, proceed to next issue.
 
 ## Phase 3: Final Verification
 
-### 3.1 Run all quality gates
+### 3.1 Run All Quality Gates
 
 Full pass after all fixes:
 - Type check
 - Lint
 - Tests
 
-### 3.2 Summarize changes
+### 3.2 Summarize Changes
 
 ```markdown
 ## Fix Summary
+
+**Progress file**: /tmp/fix-progress-{...}.md
 
 ### Issues Fixed
 
@@ -121,7 +198,7 @@ Full pass after all fixes:
 |----------|-------|------|--------|
 | CRITICAL | {description} | {file} | FIXED |
 | HIGH | {description} | {file} | FIXED |
-| ... | ... | ... | ... |
+| MEDIUM | {description} | {file} | FIXED |
 
 ### Files Modified
 - `file1.ts`: {what changed}
@@ -133,11 +210,26 @@ Full pass after all fixes:
 - Tests: PASS
 
 ### Issues Not Fixed
-[If any issues couldn't be fixed, explain why]
+[If any issues couldn't be fixed, explain why with specific reason]
+
+### Observations
+[Any other issues noticed but not fixed - out of scope]
 
 ### Follow-up Needed
 [Any items requiring additional attention]
 ```
+
+## Edge Cases
+
+| Case | Action |
+|------|--------|
+| No review report provided | Ask user to provide report or run review skill |
+| Empty review (no issues) | Report "No issues to fix" |
+| Issue location not found | Search for matching code pattern, ask if ambiguous |
+| Suggested fix would break other code | Note in progress file, escalate |
+| Fix attempt causes new gate failures | Analyze, fix if related; escalate if unrelated |
+| Issue requires design decision | Escalate with options |
+| Issue is outside current scope | Note in Observations, do not fix |
 
 ## Guidelines
 
@@ -149,6 +241,7 @@ Full pass after all fixes:
 - Follow existing code patterns
 - Keep changes minimal and focused
 - Run quality gates frequently
+- Log progress continuously
 
 **DON'T**:
 - Fix multiple issues in one change
@@ -156,16 +249,18 @@ Full pass after all fixes:
 - Skip verification
 - Ignore failing tests
 - Make unrelated changes
+- Fix issues not in the review report
 
 ### When to Skip
 
 Skip fixing an issue if:
-- It's outside the current scope
-- It requires architectural changes
-- It needs user decision
+- It's outside the current review scope
+- It requires architectural changes beyond the fix
+- It needs user decision on approach
 - It would break other functionality
+- The original issue assessment was incorrect
 
-Mark skipped issues with reason in summary.
+Mark skipped issues with specific reason in summary.
 
 ### Escalation
 
@@ -174,6 +269,7 @@ Escalate to user if:
 - Issue requires design decision
 - Fix would have broad impact
 - Uncertainty about correct approach
+- Contradictory requirements
 
 ## No Issues to Fix
 
@@ -182,5 +278,8 @@ If review report shows no issues:
 ```markdown
 ## Fix Summary
 
-No issues to fix. The review report indicates all checks passed.
+**Source**: {review report}
+**Status**: NO ISSUES TO FIX
+
+The review report indicates all checks passed. No fixes needed.
 ```
