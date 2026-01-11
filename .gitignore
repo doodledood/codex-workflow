@@ -1,51 +1,25 @@
-# Dependencies
-node_modules/
-.pnp/
-.pnp.js
+# OS files
+.DS_Store
+Thumbs.db
 
-# Build outputs
-dist/
-build/
-out/
-*.tsbuildinfo
-
-# IDE and editors
+# Editor/IDE
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
-.DS_Store
 
-# Environment and secrets
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
 .env
 .env.local
-.env.*.local
-*.pem
-*.key
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Testing
-coverage/
-.nyc_output/
-
-# Cache
-.cache/
-.turbo/
-.eslintcache
-.prettiercache
-
-# OS files
-Thumbs.db
-.DS_Store
 
 # Temporary files
-tmp/
-temp/
+/tmp/
 *.tmp
+*.log

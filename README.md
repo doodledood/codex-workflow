@@ -1,55 +1,80 @@
-# Codex Workflow
+# Codex Workflow Skills
 
-A collection of skills and plugins for Codex, enabling extended workflows and automation capabilities.
+First-principles workflows for OpenAI Codex CLI. Built by developers who understand LLM limitations.
 
-## Overview
+## Who This Is For
 
-This repository contains modular skills and plugins that extend Codex functionality, allowing for customizable workflows and integrations.
+Experienced developers frustrated by hype-driven AI coding tools. If you're tired of chasing the latest "game-changing" prompt that produces code you spend hours debugging, these skills offer a grounded alternative.
+
+**Our approach:**
+- Workflows designed around how LLMs actually work, not how we wish they worked
+- Quality over speed—invest upfront, ship with confidence
+- Simple to use, sophisticated under the hood
 
 ## Installation
 
-```bash
-npm install
-```
-
-## Usage
+Copy skills to your Codex skills directory:
 
 ```bash
-npm start
+# User-scoped (applies to all repos)
+cp -r skills/* ~/.codex/skills/
+
+# Or repo-scoped
+cp -r skills/* .codex/skills/
 ```
 
-## Project Structure
+Enable skills:
+```bash
+codex --enable skills
+```
+
+## Available Skills
+
+### Core Workflow
+
+- **`$spec`** - Interactive requirements builder through structured discovery interview
+- **`$plan`** - Create implementation plans with codebase research
+- **`$implement`** - Execute plans in-place with auto-fix loops
+
+### Code Review
+
+- **`$review-bugs`** - Audit for logical bugs, race conditions, edge cases
+- **`$review-coverage`** - Verify test coverage for changes
+- **`$review-type-safety`** - Type safety audit (TypeScript/typed languages)
+- **`$review-maintainability`** - DRY violations, dead code, complexity
+- **`$review-docs`** - Documentation accuracy audit
+- **`$review-agents-md`** - AGENTS.md compliance check
+
+### Utilities
+
+- **`$fix-review-issues`** - Orchestrate fixing issues found by review skills
+- **`$research`** - Web research with structured hypothesis tracking
+
+## Repository Structure
 
 ```
 codex-workflow/
-├── src/
-│   ├── skills/      # Individual skill implementations
-│   ├── plugins/     # Plugin modules
-│   └── index.ts     # Main entry point
-├── tests/           # Test files
-└── docs/            # Documentation
+├── skills/              # Codex skills (SKILL.md files)
+│   ├── spec/
+│   ├── plan/
+│   ├── implement/
+│   ├── review-bugs/
+│   └── ...
+├── docs/                # Documentation
+│   ├── CUSTOMER.md      # Who we build for
+│   └── LLM_CODING_CAPABILITIES.md
+├── AGENTS.md            # Development guidelines
+└── README.md
 ```
 
 ## Development
 
-```bash
-# Install dependencies
-npm install
-
-# Run in development mode
-npm run dev
-
-# Build for production
-npm run build
-
-# Run tests
-npm test
-```
-
-## Contributing
-
-Contributions are welcome! Please read the contributing guidelines before submitting a pull request.
+See [AGENTS.md](./AGENTS.md) for skill development guidelines.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT
+
+---
+
+*Ported from [claude-code-plugins](https://github.com/doodledood/claude-code-plugins) vibe-workflow*
