@@ -168,7 +168,7 @@ Do NOT report on (handled by other skills):
 - **Code organization** (DRY, coupling, complexity) → `$review-maintainability`
 - **Type safety** → `$review-type-safety`
 - **Documentation** → `$review-docs`
-- **AGENTS.md compliance** → `$review-agents-md`
+- **AGENTS.md compliance** → `$review-agents-md-adherence`
 
 Note: Testability BLOCKERS (hard-coded dependencies preventing tests) are flagged by `$review-maintainability`. This skill focuses on whether tests EXIST for the changed code, not whether code is testable.
 

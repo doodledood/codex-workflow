@@ -177,7 +177,7 @@ Do NOT report on (handled by other skills):
 - **Documentation accuracy** (stale comments, wrong docs) → `$review-docs`
 - **Code maintainability** (DRY, complexity, dead code) → `$review-maintainability`
 - **Test coverage gaps** → `$review-coverage`
-- **AGENTS.md compliance** → `$review-agents-md`
+- **AGENTS.md compliance** → `$review-agents-md-adherence`
 
 ## Guidelines
 

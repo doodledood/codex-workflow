@@ -37,7 +37,7 @@ Do NOT report on (handled by other skills):
 - **Documentation accuracy** (stale comments, doc/code drift, outdated README) → `$review-docs`
 - **Functional bugs** (runtime errors, crashes) → `$review-bugs`
 - **Test coverage gaps** → `$review-coverage`
-- **AGENTS.md compliance** → `$review-agents-md`
+- **AGENTS.md compliance** → `$review-agents-md-adherence`
 
 ## Scope Identification
 

@@ -223,7 +223,7 @@ Do NOT report on (handled by other skills):
 - **Code organization** (DRY, coupling, complexity) → `$review-maintainability`
 - **Documentation** → `$review-docs`
 - **Test coverage** → `$review-coverage`
-- **AGENTS.md compliance** → `$review-agents-md`
+- **AGENTS.md compliance** → `$review-agents-md-adherence`
 
 ## Guidelines
 

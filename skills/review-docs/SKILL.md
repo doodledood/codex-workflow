@@ -191,7 +191,7 @@ Do NOT report on (handled by other skills):
 - **Code organization** (DRY, coupling, complexity) → `$review-maintainability`
 - **Type safety** → `$review-type-safety`
 - **Test coverage gaps** → `$review-coverage`
-- **AGENTS.md compliance** (except doc-related rules) → `$review-agents-md`
+- **AGENTS.md compliance** (except doc-related rules) → `$review-agents-md-adherence`
 
 ## Edge Cases
 

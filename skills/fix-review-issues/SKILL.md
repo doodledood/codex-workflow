@@ -7,7 +7,7 @@ metadata:
 
 **User request**: $ARGUMENTS
 
-Orchestrate fixing issues identified by review skills (`$review-bugs`, `$review-coverage`, `$review-maintainability`, `$review-type-safety`, `$review-docs`, `$review-agents-md`).
+Orchestrate fixing issues identified by review skills (`$review-bugs`, `$review-coverage`, `$review-maintainability`, `$review-type-safety`, `$review-docs`, `$review-agents-md-adherence`).
 
 **Output file**: `/tmp/fix-progress-{YYYYMMDD-HHMMSS}.md`
 
