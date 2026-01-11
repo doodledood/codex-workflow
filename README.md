@@ -66,7 +66,7 @@ codex --enable skills
 - **`$review-type-safety`** - Type safety audit (TypeScript/typed languages)
 - **`$review-maintainability`** - DRY violations, dead code, complexity
 - **`$review-docs`** - Documentation accuracy audit
-- **`$review-agents-md`** - AGENTS.md compliance check
+- **`$review-agents-md-adherence`** - AGENTS.md compliance check
 
 ### Utilities
 
