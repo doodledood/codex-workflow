@@ -66,6 +66,7 @@ codex --enable skills
 - **`$review-coverage`** - Verify test coverage for changes
 - **`$review-type-safety`** - Type safety audit (TypeScript/typed languages)
 - **`$review-maintainability`** - DRY violations, dead code, complexity
+- **`$review-simplicity`** - Over-engineering and complexity audit
 - **`$review-docs`** - Documentation accuracy audit
 - **`$review-agents-md-adherence`** - AGENTS.md compliance check
 
@@ -90,6 +91,7 @@ codex-workflow/
 │   ├── implement/
 │   ├── review/
 │   ├── review-bugs/
+│   ├── review-simplicity/
 │   ├── bugfix/
 │   ├── explore-codebase/
 │   └── ...
