@@ -44,13 +44,11 @@ find ~/.claude/projects -name "*{session-id}*" -type f 2>/dev/null | head -1
 
 **If no matches**: Report error: "Session file not found for ID: {session-id}. Verify the session ID or provide the file path directly."
 
-### 1.3 Create analysis log (Memento pattern)
+### 1.3 Create analysis log
 
 Path: `/tmp/session-analysis-{first-8-chars-of-session-id}-{timestamp}.md`
 
-**Purpose**: External memory that persists findings beyond working memory limits. Write to this file AFTER completing EACH detection subsection (3.1, 3.2, etc.)—this externalizes findings before they decay in context.
-
-**Why this matters**: LLMs have limited working memory (~5-10 items). Without externalizing, early findings get "pushed out" by later processing. The log file acts as permanent storage that the refresh step (5.1) brings back into high-attention context.
+Write to this file AFTER completing EACH detection subsection (3.1, 3.2, etc.).
 
 ```markdown
 # Session Analysis Log
@@ -114,7 +112,7 @@ Status: IN_PROGRESS
 <!-- Populated after refresh step -->
 ```
 
-### 1.4 Create todo list (Memento pattern)
+### 1.4 Create todo list
 
 ```
 - [ ] Create analysis log file
@@ -424,14 +422,7 @@ For each skill used in the session:
 
 ### 5.1 Refresh context (mandatory step)
 
-**Read the FULL analysis log file NOW before any synthesis.**
-
-**Why this step exists**: Findings from Phase 3 have decayed in context—they're far from current position. The log file contains ALL findings. Reading it:
-- Moves ALL findings to context END (highest attention)
-- Converts distributed information into dense recent context
-- Restores details that would otherwise be missed in synthesis
-
-**Action**: Read entire log file at `/tmp/session-analysis-{id}-{timestamp}.md`. Do NOT proceed to 5.2 until complete.
+Read the FULL analysis log file at `/tmp/session-analysis-{id}-{timestamp}.md` before proceeding to 5.2.
 
 ### 5.2 Counterfactual analysis (the signal filter)
 
@@ -607,8 +598,7 @@ Output the final report. User can then decide which fixes to implement.
 | Evidence-based | Quote or cite specific session content |
 | Iteration-focused | Primary signal = things that required retry/correction |
 | Skill-focused | Goal is improving skills, not critiquing user or session |
-| Memento | Write findings to log as you go, refresh before synthesis |
-| Write-then-proceed | Never continue to next detection without logging current findings |
+| Write-then-proceed | Write findings to log after each detection section, refresh before synthesis |
 
 ## Edge Cases
 
