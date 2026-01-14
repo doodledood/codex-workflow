@@ -108,16 +108,7 @@ For each skill:
 5. Write updated skill to destination
 6. Mark todo `completed`
 
-### 3.3 Diff Approach
-
-Compare structure and content:
-- Phase structure (Phase 1, 2, 3...)
-- Edge cases table
-- Principles section
-- Tool invocations
-- File references
-
-### 3.4 Preserve Codex-Specific Content
+### 3.2 Preserve Codex-Specific Content
 
 If destination has Codex-specific adaptations not in source (e.g., `AGENTS.md` references already correct), preserve them.
 
