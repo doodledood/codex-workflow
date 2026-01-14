@@ -34,26 +34,31 @@ Todos = **areas to research/decide**, not steps. Expand when research reveals: (
 ```
 - [ ] Read/infer spec requirements
 - [ ] Codebase research (patterns, files to modify)
-- [ ] Architecture decisions
-- [ ] (expand as research reveals new areas)
+- [ ] Approach identification (if >1 valid approach → trade-off analysis → user decision)
+- [ ] Architecture decisions (within chosen approach)
+- [ ] (expand as research reveals)
+- [ ] Read full research log and spec (context refresh before output)
 - [ ] Finalize chunks
 ```
 
 **Evolution example** - "Add real-time notifications":
-
-Initial → After codebase research (found WebSocket) → After "needs offline too":
 ```
 - [x] Read spec → 3 types, mobile+web
-- [x] Codebase research → ws.ts, notification-service.ts
-- [x] WebSocket approach → extend existing
-- [ ] Architecture decisions
+- [x] Codebase research → found ws.ts, notification-service.ts, polling in legacy/
+- [x] Approach selection → WebSocket vs polling? User chose WebSocket
+- [ ] Architecture decisions (within WebSocket approach)
 - [ ] Offline storage (IndexedDB vs localStorage)
 - [ ] Sync conflict resolution
 - [ ] Service worker integration
+- [ ] Read full research log and spec (context refresh)
 - [ ] Finalize chunks
 ```
 
-**Key**: Never prune todos prematurely.
+Note: Approach selection shows **user decision**—not auto-decided. Found two valid approaches, presented trade-offs, user chose.
+
+**Key**: Never prune todos prematurely. Circular dependencies → merge into single todo: "Research {A} + {B} (merged: circular)".
+
+**Adapt to scope**: Simple (1-2 files) → omit approach identification if single valid approach. Complex (5+ files) → add domain-specific todos.
 
 ### 1.2 Create research log
 
@@ -64,6 +69,10 @@ Path: `/tmp/plan-research-{YYYYMMDD-HHMMSS}-{name-kebab-case}.md`
 Started: {timestamp} | Spec: {path or "inline"}
 
 ## Codebase Research
+## Approach Trade-offs
+## Spec Gaps
+## Conflicts
+## Risks & Mitigations
 ## Architecture Decisions
 ## Questions & Answers
 ## Unresolved Items
@@ -100,7 +109,60 @@ After EACH step:
 - Architectural questions: {list}
 ```
 
-### 2.5 Write initial draft
+### 2.5 Approach Identification & Trade-off Analysis
+
+**CRITICAL**: Before implementation details, identify whether multiple valid approaches exist. This is THE question that cuts option space—answering it eliminates entire planning branches.
+
+Valid approach = (1) fulfills all spec requirements, (2) technically feasible, (3) has at least one "When it wins" condition. Don't present invalid approaches.
+
+**When**: After initial research (2.2-2.4), before any implementation details.
+
+**What counts as multiple approaches**: different architectural layers, implementation patterns (eager/lazy, push/pull), integration points (modify existing vs create new), scopes (filter at source vs consumer). Multiple valid locations = multiple approaches; multiple valid patterns = multiple approaches.
+
+**Process**:
+1. From research: Where could this live? How implemented? Who consumes what we're modifying?
+2. **One valid approach** → document why in log, proceed
+3. **Multiple valid** → STOP until user decides
+
+**Trade-off format** (research log `## Approach Trade-offs`):
+```markdown
+### Approaches: {what deciding}
+
+**Approach A: {name}**
+- How: {description}
+- Pros: {list}
+- Cons: {list}
+- When it wins: {conditions}
+- Affected consumers: {list}
+
+**Approach B: {name}**
+- How: {description}
+- Pros: {list}
+- Cons: {list}
+- When it wins: {conditions}
+- Affected consumers: {list}
+
+**Existing codebase pattern**: {how similar solved}
+**Recommendation**: {approach} — {why}
+**Choose alternative if**: {honest conditions where other approach wins}
+```
+
+**Recommendation = cleanest**: (1) separation of concerns (if unsure: use layer where similar features live), (2) matches codebase patterns, (3) minimizes blast radius, (4) most reversible. Prioritize 1>2>3>4.
+
+**Be honest**: State clearly when alternative wins. User has context you don't (future plans, team preferences, business constraints).
+
+**Skip asking only when**: genuinely ONE valid approach (document why others don't work) OR ALL five measurable skip criteria true:
+1. Same files changed by both
+2. No consumer behavior change
+3. Reversible in <1 chunk (<200 lines)
+4. No schema/API/public interface changes
+5. No different error/failure modes
+
+If ANY fails → ask user.
+
+### 2.6 Write initial draft
+
+**Precondition**: Approach decided (single documented OR user chose/delegated after trade-offs). Don't write until approach resolved.
 
 First draft with `[TBD]` markers. Same file path for all updates.
 
@@ -164,11 +226,14 @@ Architecture decisions:
 
    | Priority | Type | Purpose | Examples |
    |----------|------|---------|----------|
+   | 0 | Approach Selection | Fundamental architecture | WebSocket vs polling? Modify existing vs create new? Filter at source vs consumer? Where should this live? |
    | 1 | Implementation Phasing | How much to build now vs later | Full impl vs stub? Include migration? Optimize or simple first? |
    | 2 | Branching | Open/close implementation paths | Sync vs async? Polling vs push? In-memory vs persistent? |
    | 3 | Technical Constraints | Non-negotiable technical limits | Must integrate with X? Performance requirements? Backward compatibility? |
    | 4 | Architectural | Choose between patterns | Error strategy? State management? Concurrency model? |
    | 5 | Detail Refinement | Fine-grained technical details | Test coverage scope? Retry policy? Logging verbosity? |
+
+   **P0 rules**: If P0 question exists, ask P0 **first** before ANY implementation details. Wrong approach = entire plan wasted. P0 is mandatory when >1 valid approach (section 2.5).
 
 4. **Always mark one option "(Recommended)"** - put first with reasoning in description. When options are equivalent AND easily reversible (changes affect only 1-2 files, where each changed file is imported by 5 or fewer other files, and there are no data migrations, schema changes, or public API changes), decide yourself (lean toward existing codebase patterns).
 
@@ -226,28 +291,66 @@ Remove `[TBD]`, ensure chunk consistency, verify dependency ordering, add line r
 
 ### 4.4 Mark all todos complete
 
-### 4.5 Present summary
+### 4.5 Present approval summary
 
 ```
-## Plan Summary
+## Plan Approval Summary: {Feature}
 
 **Plan file**: /tmp/plan-{...}.md
 
-### What We're Building
-{1-2 sentences}
+### At a Glance
+| Aspect | Summary |
+|--------|---------|
+| Approach | {Chosen approach from P0 decision} |
+| Chunks | {count} |
+| Parallel | {which chunks can run in parallel} |
+| Risk | {primary risk or "Low - standard patterns"} |
 
-### Chunks ({count})
-1. {Name} - {description}
+### Execution Flow
+
+{ASCII dependency diagram}
+
+Example format:
+┌─────────────┐
+│  1. Types   │
+└──────┬──────┘
+       │
+  ┌────┴────┐
+  ▼         ▼
+┌─────┐   ┌─────┐
+│ 2.A │   │ 2.B │  ← Parallel
+└──┬──┘   └──┬──┘
+   └────┬────┘
+        ▼
+   ┌─────────┐
+   │ 3. Integ│
+   └─────────┘
+
+### Chunks
+1. **{Name}**: {one-line description}
+2. **{Name}**: {one-line description}
+...
 
 ### Key Decisions
-- {Decision}: {choice}
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| {Area} | {Choice} | {Brief why} |
 
-### Execution Order
-{Dependencies, parallel opportunities}
+### Risks & Mitigations
+| Risk | Mitigation |
+|------|------------|
+| {Risk} | {How addressed} |
 
 ---
-Review full plan. Adjust or approve to start.
+Review full plan. Approve to start implementation.
 ```
+
+**Diagram guidelines**:
+- Show chunk dependencies and parallel opportunities
+- Number chunks to match plan
+- Use box characters: `┌ ┐ └ ┘ │ ─ ┬ ┴ ├ ┤ ▼` or simple ASCII
+- Label parallel opportunities
+- Keep to actual chunk count
 
 ### 4.6 Wait for approval
 
@@ -381,7 +484,10 @@ Files to create:
 Context files:
 - reference.ts - [why relevant]
 
-Notes: [Assumptions, risks, alternatives]
+Notes: [Assumptions, alternatives considered]
+
+Risks:
+- [Specific risk] → [mitigation]
 
 Tasks:
 - Implement fn() - [purpose]
