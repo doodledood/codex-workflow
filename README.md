@@ -80,6 +80,7 @@ codex --enable skills
 ### Utilities
 
 - **`$fix-review-issues`** - Orchestrate fixing issues found by `$review`
+- **`$learn-from-session`** - Analyze sessions to identify workflow gaps and suggest skill improvements
 
 ## Repository Structure
 
@@ -94,6 +95,7 @@ codex-workflow/
 │   ├── review-simplicity/
 │   ├── bugfix/
 │   ├── explore-codebase/
+│   ├── learn-from-session/
 │   └── ...
 ├── docs/                # Documentation
 │   ├── CUSTOMER.md      # Who we build for
