@@ -57,10 +57,11 @@ codex --enable skills
 
 - **`$spec`** - Interactive requirements builder through structured discovery interview
 - **`$plan`** - Create implementation plans with codebase research
-- **`$implement`** - Execute plans in-place with auto-fix loops
+- **`$implement`** - Execute plans in-place with auto-fix loops and optional review workflow
 
 ### Code Review
 
+- **`$review`** - Comprehensive review orchestrator (runs all applicable reviews)
 - **`$review-bugs`** - Audit for logical bugs, race conditions, edge cases
 - **`$review-coverage`** - Verify test coverage for changes
 - **`$review-type-safety`** - Type safety audit (TypeScript/typed languages)
@@ -68,10 +69,16 @@ codex --enable skills
 - **`$review-docs`** - Documentation accuracy audit
 - **`$review-agents-md-adherence`** - AGENTS.md compliance check
 
+### Debugging & Research
+
+- **`$bugfix`** - Systematic bug investigation and fix workflow
+- **`$explore-codebase`** - Comprehensive codebase exploration and analysis
+- **`$research-web`** - Multi-wave web research with strategic source selection
+- **`$web-research`** - Structured web research with hypothesis tracking
+
 ### Utilities
 
-- **`$fix-review-issues`** - Orchestrate fixing issues found by review skills
-- **`$web-research`** - Web research with structured hypothesis tracking
+- **`$fix-review-issues`** - Orchestrate fixing issues found by `$review`
 
 ## Repository Structure
 
@@ -81,18 +88,21 @@ codex-workflow/
 │   ├── spec/
 │   ├── plan/
 │   ├── implement/
+│   ├── review/
 │   ├── review-bugs/
+│   ├── bugfix/
+│   ├── explore-codebase/
 │   └── ...
 ├── docs/                # Documentation
 │   ├── CUSTOMER.md      # Who we build for
 │   └── LLM_CODING_CAPABILITIES.md
-├── AGENTS.md            # Development guidelines
+├── CLAUDE.md            # Development guidelines
 └── README.md
 ```
 
 ## Development
 
-See [AGENTS.md](./AGENTS.md) for skill development guidelines.
+See [CLAUDE.md](./CLAUDE.md) for skill development guidelines.
 
 ## License
 
