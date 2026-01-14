@@ -84,16 +84,31 @@ Skill instructions...
 
 ## Phase 3: Sync Each Skill
 
+### 3.0 Adding New Skills
+
+For skills that exist in source but not destination, **copy first, then adapt**:
+
+```bash
+# Copy the skill directory from cloned repo
+cp -r /tmp/claude-code-plugins/claude-plugins/vibe-workflow/skills/<skill-name> ./skills/
+
+# Then read and apply Codex adaptations to the copied file
+```
+
+This ensures you start with the full source content and only modify what's needed for Codex compatibility.
+
+### 3.1 Sync Process
+
 For each skill:
 
 1. Mark todo `in_progress`
-2. Read source skill file
-3. Read destination skill file (if exists)
+2. **New skill**: Copy from source first (see 3.0)
+3. **Existing skill**: Read both source and destination
 4. Apply adaptation rules from Phase 2
 5. Write updated skill to destination
 6. Mark todo `completed`
 
-### 3.1 Diff Approach
+### 3.3 Diff Approach
 
 Compare structure and content:
 - Phase structure (Phase 1, 2, 3...)
@@ -102,7 +117,7 @@ Compare structure and content:
 - Tool invocations
 - File references
 
-### 3.2 Preserve Codex-Specific Content
+### 3.4 Preserve Codex-Specific Content
 
 If destination has Codex-specific adaptations not in source (e.g., `AGENTS.md` references already correct), preserve them.
 
