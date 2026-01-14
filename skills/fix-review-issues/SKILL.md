@@ -50,6 +50,30 @@ Options:
 2. Group issues by category
 3. Count totals by severity
 
+### Phase 1.5: Validate Findings Against Plan/Spec
+
+Before presenting findings to user, validate each issue against any existing plan or spec files:
+
+**Step 1**: Check for plan/spec files:
+- Look in `/tmp/` for recent `plan-*.md` or `spec-*.md` files
+- Check if user mentioned a plan or spec in the conversation
+
+**Step 2**: If plan/spec exists, for each finding ask:
+- Does this contradict an explicit decision in the plan/spec?
+- Is this flagged behavior actually the intended design?
+- Was this trade-off explicitly accepted?
+
+**Step 3**: Filter findings:
+- **Remove**: Issues that contradict explicit plan/spec decisions (the plan is authoritative)
+- **Keep**: Issues not addressed by plan/spec, or that identify genuine oversights
+- **Flag**: Issues where plan/spec is ambiguous - note for user decision
+
+**Step 4**: If findings were filtered, note in summary:
+```
+Note: {N} findings were filtered because they contradict explicit decisions in {plan/spec file}.
+The plan/spec takes precedence. Run with --ignore-plan to see all findings.
+```
+
 ### Phase 2: Confirm Scope with User
 
 **If `--autonomous` OR scope arguments provided** → skip Phase 2, proceed to Phase 3

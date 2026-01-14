@@ -142,6 +142,7 @@ Skip if `--no-review` was set.
 - **Dependency order**: Execute in order, skip failed chunk's dependents
 - **Gates non-negotiable**: Fix root cause (no `@ts-ignore`, test skips, or suppressions); skip chunk only after 3 failed strategies
 - **Commit per chunk**: Each successful chunk gets its own commit (no push until end); provides rollback points for recovery
+- **Simplicity**: Prefer readable code over micro-optimizations; don't add complexity for marginal performance gains
 
 ## Gate Detection
 
