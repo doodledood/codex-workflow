@@ -34,6 +34,7 @@ Todos = **areas to discover**, not interview steps. Each todo reminds you what c
 - [ ] Scope & target users
 - [ ] Core requirements
 - [ ] (expand continuously as answers reveal new areas)
+- [ ] Read full interview log (context refresh before output)
 - [ ] Finalize spec
 ```
 
@@ -46,6 +47,7 @@ Initial:
 - [ ] Initial context research
 - [ ] Scope & target users
 - [ ] Core requirements
+- [ ] Read full interview log (context refresh before output)
 - [ ] Finalize spec
 ```
 
@@ -57,6 +59,7 @@ After user says "needs to work across mobile and web":
 - [ ] Mobile notification delivery (push vs in-app)
 - [ ] Web notification delivery (browser vs in-app)
 - [ ] Cross-platform sync behavior
+- [ ] Read full interview log (context refresh before output)
 - [ ] Finalize spec
 ```
 
@@ -70,6 +73,7 @@ After user mentions "also needs email digest option":
 - [ ] Cross-platform sync behavior
 - [ ] Email digest frequency options
 - [ ] Email vs real-time preferences
+- [ ] Read full interview log (context refresh before output)
 - [ ] Finalize spec
 ```
 
