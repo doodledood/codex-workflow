@@ -35,21 +35,15 @@ ls /tmp/claude-code-plugins/claude-plugins/vibe-workflow/agents/
 ls ./skills/
 ```
 
-**Agent-to-Skill Mapping** (source agents contain full implementations that map to destination skills):
+**Agent-to-Skill Discovery**: Source agents contain full implementations. Dynamically match agents to destination skills by:
 
-| Source Agent | Destination Skill |
-|--------------|-------------------|
-| `agents/code-bugs-reviewer.md` | `skills/review-bugs/SKILL.md` |
-| `agents/code-coverage-reviewer.md` | `skills/review-coverage/SKILL.md` |
-| `agents/code-maintainability-reviewer.md` | `skills/review-maintainability/SKILL.md` |
-| `agents/code-simplicity-reviewer.md` | `skills/review-simplicity/SKILL.md` |
-| `agents/code-testability-reviewer.md` | `skills/review-testability/SKILL.md` |
-| `agents/type-safety-reviewer.md` | `skills/review-type-safety/SKILL.md` |
-| `agents/docs-reviewer.md` | `skills/review-docs/SKILL.md` |
-| `agents/claude-md-adherence-reviewer.md` | `skills/review-agents-md-adherence/SKILL.md` |
-| `agents/bug-fixer.md` | `skills/bugfix/SKILL.md` |
-| `agents/codebase-explorer.md` | `skills/explore-codebase/SKILL.md` |
-| `agents/web-researcher.md` | `skills/research-web/SKILL.md` |
+1. **Read each agent file's frontmatter** - extract the `name` field
+2. **Search destination skills** for matching purpose:
+   - Agent `code-X-reviewer` → look for `review-X` skill
+   - Agent `X-reviewer` → look for `review-X` skill
+   - Agent `X-fixer` → look for corresponding fix skill (e.g., `bugfix`)
+   - Agent names may not match exactly - compare descriptions and purpose
+3. **For unmatched agents** - check if a new skill should be created
 
 **Note**: Source skills often have brief delegations like "Use the X agent to...". The actual implementation is in the corresponding agent file. When syncing, compare the agent file (not the brief skill) against the destination skill.
 
