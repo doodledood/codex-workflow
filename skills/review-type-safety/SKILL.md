@@ -162,12 +162,18 @@ For each function/method:
 
 ### 4. Actionability Filter
 
-Before reporting an issue, it must pass:
+Before reporting a type safety issue, it must pass ALL of these criteria. **If a finding fails ANY criterion, drop it entirely.**
 
-1. **In scope** - Only report type issues in changed code (diff-based) or specified paths
-2. **Actually a type hole** - Would this let a bug through that typing could catch?
-3. **Worth the complexity** - Would fixing this add significant type safety without undue complexity?
-4. **Matches codebase patterns** - Don't demand branded types in a codebase that doesn't use them
+**High-Confidence Requirement**: Only report type issues you are CERTAIN about. If you find yourself thinking "this type could be better" or "this might cause issues", do NOT report it. The bar is: "I am confident this type hole WILL enable bugs and can explain how."
+
+1. **In scope** - Two modes:
+   - **Diff-based review** (default, no paths specified): ONLY report type issues introduced by this change. Pre-existing `any` or type holes are strictly out of scope—even if you notice them, do not report them. The goal is reviewing the change, not auditing the codebase.
+   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing type issues are valid findings since the user requested a full review of those paths.
+2. **Worth the complexity** - Type-level gymnastics that hurt readability may not be worth it. A 20-line conditional type to catch one edge case is often worse than a runtime check.
+3. **Matches codebase strictness** - If `strict` mode is off, don't demand strict-mode patterns. If `any` is used liberally elsewhere, flagging one more is low value.
+4. **Provably enables bugs** - "This could theoretically be wrong" isn't a finding. Identify the specific code path where the type hole causes a real problem.
+5. **Author would adopt** - Would a reasonable author say "good catch, let me fix that type" or "that's over-engineering for our use case"?
+6. **High confidence** - You must be certain this type hole enables bugs. "This type could be tighter" is not sufficient. "This type hole WILL allow passing X where Y is expected, causing Z failure" is required.
 
 ## Output Format
 

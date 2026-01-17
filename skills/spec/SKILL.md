@@ -102,7 +102,28 @@ Started: {timestamp}
 
 ## Phase 2: Initial Context Gathering
 
-### 2.1 Research codebase context
+### 2.0 Determine if codebase research is relevant
+
+**Check $ARGUMENTS**: Does the work involve code, files, features, or system behavior?
+
+| If $ARGUMENTS... | Then... |
+|------------------|---------|
+| References code files, functions, components, features, bugs, refactors, or system behavior | Proceed to 2.1 (codebase research) |
+| Is about external research, analysis, comparison, or domain decisions (e.g., "research best X", "compare options", "find optimal Y") | SKIP to Phase 3 (interview) |
+
+**Indicators of NON-CODE work** (skip codebase research):
+- Keywords: "research", "find best", "compare options", "analyze market", "evaluate vendors", "select tool"
+- No mention of files, functions, components, APIs, or system behavior
+- Domain-specific decisions: investments, vendors, technologies to adopt, market analysis
+
+**Indicators of CODE work** (do codebase research):
+- Keywords: "add feature", "fix bug", "refactor", "implement", "update", "migrate"
+- References to files, functions, APIs, database schemas, components
+- System behavior changes, UI modifications, integration work
+
+**If unclear**: Ask user: "Is this spec about code/system changes, or external research/analysis?"
+
+### 2.1 Research codebase context (code work only)
 
 Explore the codebase to understand context before asking questions. Use file search and code reading to find:
 - Product purpose, existing patterns, user flows, terminology
@@ -135,10 +156,17 @@ After EACH research step, append to interview log:
 Write first draft with `[TBD]` markers for unresolved items. Use same file path for all updates.
 
 ### Phase 2 Complete When
+
+**For code work**:
 - All codebase research tasks finished
 - All recommended files read
 - Initial draft written with `[TBD]` markers
 - Interview log populated with research findings
+
+**For non-code work** (external research/analysis):
+- Phase 2 skipped per 2.0 decision
+- Initial draft written with `[TBD]` markers (based on $ARGUMENTS only)
+- Proceed directly to Phase 3 interview
 
 ## Phase 3: Iterative Discovery Interview
 
@@ -321,29 +349,77 @@ Generated: {date}
 
 ### 4.4 Mark all todos complete
 
-### 4.5 Output summary
+### 4.5 Output approval summary
+
+Present a scannable summary that allows approval without reading the full spec. Users may approve based on this summary alone.
 
 ```
-## Spec Summary
+## Spec Approval Summary: {Work Name}
 
-**Work**: {name}
-**File**: /tmp/spec-{...}.md
+**Full spec**: /tmp/spec-{...}.md
 
-### What We're Doing
-{1-2 sentences}
+### At a Glance
+| Aspect | Summary |
+|--------|---------|
+| Problem | {One-liner problem statement} |
+| Scope | {What's in / explicitly out} |
+| Users | {Who's affected} |
+| Success | {Primary observable success criterion} |
 
-### Key Decisions Made
-- {Decision}: {choice}
+### State Flow
 
-### Core Requirements ({count})
-- {Top 3 requirements}
+{ASCII state machine showing main states/transitions of the feature}
+
+Example format:
+┌─────────────┐   action    ┌─────────────┐
+│  STATE A    │────────────>│  STATE B    │
+└─────────────┘             └─────────────┘
+       │                          │
+       v                          v
+┌─────────────────────────────────────────┐
+│              OUTCOME STATE              │
+└─────────────────────────────────────────┘
+
+Generate diagram that captures:
+- Key states the system/user moves through
+- Transitions (user actions or system events)
+- Terminal states or outcomes
+
+### Requirements ({count} total)
+
+**Core** (must have):
+- {Requirement 1}
+- {Requirement 2}
+- {Requirement 3}
+- ...
+
+**Edge Cases**:
+- {Edge case 1}: {behavior}
+- {Edge case 2}: {behavior}
+
+### Key Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| {Area 1} | {Choice} | {Brief why} |
+| {Area 2} | {Choice} | {Brief why} |
 
 ### Out of Scope
-- {Key non-goals}
+- {Non-goal 1}
+- {Non-goal 2}
 
 ---
-Review full spec and let me know adjustments.
+Approve to proceed to planning, or request adjustments.
 ```
+
+**State machine guidelines**:
+- Show the primary flow, not every edge case
+- Use box characters: `┌ ┐ └ ┘ │ ─ ┬ ┴ ├ ┤ ┼` or simple ASCII: `+---+`, `|`, `--->`
+- Label transitions with user actions or system events
+- Keep to 3-7 states for readability
+- For CRUD features: show entity lifecycle
+- For user flows: show user journey states
+- For system changes: show before/after states
 
 ## Key Principles
 

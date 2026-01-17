@@ -80,17 +80,20 @@ Look for:
 
 ### 7. Actionability Filter
 
-Before reporting a documentation issue, it must pass ALL of these criteria:
+Before reporting a documentation issue, it must pass ALL of these criteria. **If a finding fails ANY criterion, drop it entirely.**
+
+**High-Confidence Requirement**: Only report documentation issues you are CERTAIN about. If you find yourself thinking "this might be outdated" or "this could be clearer", do NOT report it. The bar is: "I am confident this documentation IS incorrect and can show the discrepancy."
 
 1. **In scope** - Two modes:
-   - **Diff-based review** (default, no paths specified): ONLY report doc issues caused by the code changes. Pre-existing doc problems are strictly out of scope.
-   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing inaccuracies are valid findings.
+   - **Diff-based review** (default, no paths specified): ONLY report doc issues caused by the code changes. Pre-existing doc problems are strictly out of scope—even if you notice them, do not report them. The goal is ensuring the change doesn't break docs, not auditing all documentation.
+   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing inaccuracies are valid findings since the user requested a full review of those paths.
 2. **Actually incorrect or missing** - "Could add more detail" is not a finding. "This parameter is documented as optional but the code requires it" is a finding.
-3. **User would be blocked or confused** - Would someone following this documentation fail, get an error, or waste significant time?
+3. **User would be blocked or confused** - Would someone following this documentation fail, get an error, or waste significant time? If yes, report it. If they'd figure it out, it's Low at best.
 4. **Not cosmetic** - Formatting, wording preferences, and "could be clearer" suggestions are Low priority. Focus on factual accuracy.
 5. **Matches doc depth** - Don't demand comprehensive API docs in a project with minimal docs. Match the existing documentation style and depth.
+6. **High confidence** - You must be certain the documentation is incorrect. "This could be improved" is not sufficient. "This doc says X but the code does Y" is required.
 
-If a finding fails any criterion, either drop it or demote to "Minor Suggestions."
+If a finding fails any criterion, drop it entirely.
 
 ## Severity Classification
 

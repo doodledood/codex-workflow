@@ -90,17 +90,20 @@ IF no test file exists for changed file:
 
 ### Step 5: Actionability Filter
 
-Before reporting a coverage gap, it must pass ALL of these criteria:
+Before reporting a coverage gap, it must pass ALL of these criteria. **If a finding fails ANY criterion, drop it entirely.**
+
+**High-Confidence Requirement**: Only report coverage gaps you are CERTAIN about. If you find yourself thinking "this might need more tests" or "this could benefit from coverage", do NOT report it. The bar is: "I am confident this code path IS untested and SHOULD have tests."
 
 1. **In scope** - Two modes:
-   - **Diff-based review** (default, no paths specified): ONLY report coverage gaps for code introduced by this change. Pre-existing untested code is strictly out of scope.
-   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing coverage gaps are valid findings.
+   - **Diff-based review** (default, no paths specified): ONLY report coverage gaps for code introduced by this change. Pre-existing untested code is strictly out of scope—even if you notice it, do not report it. The goal is ensuring new code has tests, not auditing all coverage.
+   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing coverage gaps are valid findings since the user requested a full review of those paths.
 2. **Worth testing** - Trivial code (simple getters, pass-through functions, obvious delegations) may not need tests. Focus on logic that can break.
 3. **Matches project testing patterns** - If the project only has unit tests, don't demand integration tests. If tests are sparse, don't demand 100% coverage.
 4. **Risk-proportional** - High-risk code (auth, payments, data mutations) deserves more coverage scrutiny than low-risk utilities.
-5. **Testable** - If the code is hard to test due to design, note it as context but don't demand tests that would require major refactoring.
+5. **Testable** - If the code is hard to test due to design (not your concern—that's `$review-testability`), note it as context but don't demand tests that would require major refactoring.
+6. **High confidence** - You must be certain this is a real coverage gap. "This could use more tests" is not sufficient. "This function has NO tests and handles critical logic" is required.
 
-If a finding fails any criterion, either drop it or note it as "Nice to Have."
+If a finding fails any criterion, drop it entirely.
 
 ## Quality Standards
 
