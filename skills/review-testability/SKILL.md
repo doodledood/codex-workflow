@@ -107,19 +107,31 @@ Look for:
 - Cached values without clear reset mechanisms
 - Closures capturing mutable state
 
-### 5. Actionability Filter
+### 5. Codebase Adaptation
 
-Before reporting an issue, it must pass ALL of these criteria:
+Before flagging issues, observe existing project patterns:
+
+1. **Testing philosophy**: Check existing test files. Does the project favor unit tests with mocks, integration tests with real dependencies, or end-to-end tests? Calibrate expectations accordingly.
+2. **Dependency injection**: If the project uses a DI framework (Nest.js, Spring, etc.), multiple constructor parameters may be idiomatic. What matters is whether the important logic is testable, not the raw dependency count.
+3. **Mocking conventions**: Note what mocking approach the project uses. Recommend solutions compatible with existing patterns.
+4. **Existing similar code**: If similar code elsewhere in the codebase follows a testable pattern, reference it. If the codebase consistently uses a less-testable pattern, note the friction but acknowledge the consistency tradeoff.
+
+### 6. Actionability Filter
+
+Before reporting an issue, it must pass ALL of these criteria. **If a finding fails ANY criterion, drop it entirely.**
+
+**High-Confidence Requirement**: Only report testability issues you are CERTAIN about. If you find yourself thinking "this might be hard to test" or "this could be more testable", do NOT report it. The bar is: "I am confident this code IS hard to test and can explain exactly what mocks would be needed."
 
 1. **In scope** - Two modes:
-   - **Diff-based review** (default, no paths specified): ONLY report testability issues introduced by this change.
+   - **Diff-based review** (default, no paths specified): ONLY report testability issues introduced by this change. Pre-existing testability problems are strictly out of scope.
    - **Explicit path review** (user specified files/directories): Audit everything in scope.
-2. **Actually impacts testing** - Would this make writing unit tests harder?
-3. **Feasible to fix** - The improvement doesn't require major architectural changes
-4. **Proportional impact** - High-risk code (business logic) deserves more scrutiny than utilities
-5. **Matches project patterns** - Don't demand DI framework in a project without one
+2. **Significant friction** - Not just 1-2 mocks for orchestration code. Focus on code requiring many mocks or where important logic is buried.
+3. **Important logic** - Business rules that matter if they break (pricing, auth, validation). Utility code may not warrant the same scrutiny.
+4. **Concrete benefit** - You must be able to articulate exactly how testing becomes easier.
+5. **Matches project patterns** - Don't demand DI framework in a project without one. Calibrate to what's normal for this codebase.
+6. **High confidence** - You must be CERTAIN this is a testability issue. Speculation is not sufficient.
 
-If a finding fails any criterion, either drop it or note it in "Minor Observations."
+If a finding fails any criterion, drop it entirely.
 
 ## Severity Calibration
 

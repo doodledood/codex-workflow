@@ -20,16 +20,38 @@ If already exists, pull latest:
 cd /tmp/claude-code-plugins && git pull
 ```
 
-### 1.2 List Skill Directories (names only)
+### 1.2 List Skills and Agents
 
-**Source location**: `/tmp/claude-code-plugins/claude-plugins/vibe-workflow/skills/`
+**Source locations**:
+- Skills: `/tmp/claude-code-plugins/claude-plugins/vibe-workflow/skills/`
+- Agents: `/tmp/claude-code-plugins/claude-plugins/vibe-workflow/agents/`
+
 **Destination location**: `./skills/`
 
-List directory names only (NOT file contents):
+List directory names and agent files (NOT file contents):
 ```bash
 ls /tmp/claude-code-plugins/claude-plugins/vibe-workflow/skills/
+ls /tmp/claude-code-plugins/claude-plugins/vibe-workflow/agents/
 ls ./skills/
 ```
+
+**Agent-to-Skill Mapping** (source agents contain full implementations that map to destination skills):
+
+| Source Agent | Destination Skill |
+|--------------|-------------------|
+| `agents/code-bugs-reviewer.md` | `skills/review-bugs/SKILL.md` |
+| `agents/code-coverage-reviewer.md` | `skills/review-coverage/SKILL.md` |
+| `agents/code-maintainability-reviewer.md` | `skills/review-maintainability/SKILL.md` |
+| `agents/code-simplicity-reviewer.md` | `skills/review-simplicity/SKILL.md` |
+| `agents/code-testability-reviewer.md` | `skills/review-testability/SKILL.md` |
+| `agents/type-safety-reviewer.md` | `skills/review-type-safety/SKILL.md` |
+| `agents/docs-reviewer.md` | `skills/review-docs/SKILL.md` |
+| `agents/claude-md-adherence-reviewer.md` | `skills/review-agents-md-adherence/SKILL.md` |
+| `agents/bug-fixer.md` | `skills/bugfix/SKILL.md` |
+| `agents/codebase-explorer.md` | `skills/explore-codebase/SKILL.md` |
+| `agents/web-researcher.md` | `skills/research-web/SKILL.md` |
+
+**Note**: Source skills often have brief delegations like "Use the X agent to...". The actual implementation is in the corresponding agent file. When syncing, compare the agent file (not the brief skill) against the destination skill.
 
 ### 1.3 Categorize Skills
 
@@ -150,14 +172,18 @@ Skill instructions...
 
 **Step 1: Read and Compare**
 1. Mark "Read {skill-name}" todo as `in_progress`
-2. Read source: `/tmp/claude-code-plugins/claude-plugins/vibe-workflow/skills/{skill-name}/SKILL.md`
-3. Read destination: `./skills/{skill-name}/SKILL.md`
-4. Identify differences:
+2. **Determine the source of truth**:
+   - Check if source skill is a brief delegation (e.g., "Use the X agent to...")
+   - If brief delegation → read the corresponding **agent file** as the source
+   - If full implementation → read the skill file as source
+3. Read source (agent or skill based on above)
+4. Read destination: `./skills/{skill-name}/SKILL.md`
+5. Identify differences:
    - Content changes in source that should be synced
    - Codex-specific adaptations in destination to preserve
    - Already up-to-date sections (no change needed)
-5. Note findings (what needs updating, what's already correct)
-6. Mark todo `completed`
+6. Note findings (what needs updating, what's already correct)
+7. Mark todo `completed`
 
 **Step 2: Update**
 1. Mark "Update {skill-name}" todo as `in_progress`
@@ -165,7 +191,27 @@ Skill instructions...
 3. If changes needed:
    - Apply source changes while preserving Codex adaptations
    - Use Edit tool for targeted updates (not full rewrites)
+   - Ensure the destination skill has the FULL implementation (not a brief delegation)
 4. Mark todo `completed`
+
+### 3.2.1 Agent-to-Skill Sync Pattern
+
+When syncing an agent to a skill:
+
+1. **Read the source agent file** (e.g., `agents/code-bugs-reviewer.md`)
+2. **Read the destination skill file** (e.g., `skills/review-bugs/SKILL.md`)
+3. **Compare content** - the destination should contain:
+   - Proper Codex frontmatter (`name`, `description`, `metadata`)
+   - Full implementation from the agent, adapted for Codex
+4. **Apply updates** from agent to skill:
+   - New sections, categories, or guidelines from the agent
+   - Updated review processes or criteria
+   - New output formats or examples
+5. **Preserve Codex adaptations**:
+   - `AGENTS.md` instead of `CLAUDE.md`
+   - `$skill-name` invocation format
+   - No subagent references
+   - Codex frontmatter format
 
 ### 3.3 For Skills to REMOVE
 
@@ -217,8 +263,9 @@ git push -u origin <branch>
 | Skill exists only in destination | Ask user before removing |
 | Skill renamed in source | Create new, ask about removing old |
 | Major structural changes | Document changes, proceed with sync |
-| Source skill uses subagents | Adapt to inline execution |
-| Source has brief delegation, dest has full impl | Preserve destination's fuller implementation |
+| Source skill uses subagents | Adapt to inline execution (run sequentially) |
+| Source skill is brief delegation | Read the corresponding **agent file** as the source of truth |
+| Source agent updated but dest skill exists | Sync agent changes into the destination skill |
 | Conflicting content | Prefer source logic, apply Codex adaptations |
 
 ## Verification Checklist

@@ -81,18 +81,21 @@ Look for:
 
 ### 4. Actionability Filter
 
-Before reporting an issue, it must pass ALL of these criteria:
+Before reporting an issue, it must pass ALL of these criteria. **If a finding fails ANY criterion, drop it entirely.**
+
+**High-Confidence Requirement**: Only report issues you are CERTAIN about. If you find yourself thinking "this might be a problem" or "this could become tech debt", do NOT report it. The bar is: "I am confident this IS a maintainability issue and can explain the concrete impact."
 
 1. **In scope** - Two modes:
-   - **Diff-based review** (default, no paths specified): ONLY report issues introduced or meaningfully worsened by this change. Pre-existing tech debt is strictly out of scope.
-   - **Explicit path review** (user specified files/directories): Audit everything in scope.
-2. **Worth the churn** - Fix value must exceed refactor cost. Rule of thumb: a refactor is worth it if lines eliminated >= 50% of lines added.
-3. **Matches codebase patterns** - Don't demand abstractions absent elsewhere. If the codebase doesn't use dependency injection, don't flag its absence.
-4. **Not an intentional tradeoff** - Some duplication is intentional (test isolation, avoiding coupling). Check for comments or patterns.
-5. **Concrete impact** - "Could be cleaner" isn't a finding. You must articulate specific consequences.
-6. **Author would prioritize** - Ask yourself: would a reasonable author fix this before shipping, or defer it?
+   - **Diff-based review** (default, no paths specified): ONLY report issues introduced or meaningfully worsened by this change. "Meaningfully worsened" means the change added 20%+ more lines of duplicate/problematic code to a pre-existing issue, OR added a new instance of a pattern already problematic (e.g., third copy of duplicate code). Pre-existing tech debt is strictly out of scope—even if you notice it, do not report it. The goal is reviewing the change, not auditing the codebase.
+   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing issues are valid findings since the user requested a full review of those paths.
+2. **Worth the churn** - Fix value must exceed refactor cost. Rule of thumb: a refactor is worth it if (lines of duplicate/problematic code eliminated) >= 50% of (lines added for new abstraction + lines modified at call sites).
+3. **Matches codebase patterns** - Don't demand abstractions absent elsewhere. If the codebase doesn't use dependency injection, don't flag its absence. If similar code exists without this pattern, the author likely knows.
+4. **Not an intentional tradeoff** - Some duplication is intentional (test isolation, avoiding coupling). Some complexity is necessary (performance, compatibility). If code with the same function signature pattern exists in 2+ other places in the codebase, assume it's an intentional convention.
+5. **Concrete impact** - "Could be cleaner" isn't a finding. You must articulate specific consequences: "Will cause shotgun surgery when X changes" or "Makes testing Y impossible."
+6. **Author would prioritize** - Ask yourself: given limited time, would a reasonable author fix this before shipping, or defer it? If defer, it's Low severity at best.
+7. **High confidence** - You must be certain this is a real maintainability problem. "This looks like it could cause issues" is not sufficient. "This WILL cause X problem because Y" is required.
 
-If a finding fails any criterion: for Critical/High issues, demote to "Minor Observations"; for Medium/Low issues, drop it entirely.
+If a finding fails any criterion, drop it entirely.
 
 ## Context Adaptation
 

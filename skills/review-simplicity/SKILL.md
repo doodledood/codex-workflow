@@ -100,17 +100,26 @@ For each layer of abstraction:
 
 ### 5. Actionability Filter
 
-Before reporting an issue, it must pass ALL of these criteria:
+Before reporting an issue, it must pass ALL of these criteria. **If it fails ANY criterion, drop it entirely.**
+
+**High-Confidence Requirement**: Only report complexity you are CERTAIN is unnecessary. If you find yourself thinking "this might be over-engineered" or "this could be simpler", do NOT report it. The bar is: "I am confident this complexity provides NO benefit and can explain what simpler approach would work."
 
 1. **In scope** - Two modes:
-   - **Diff-based review** (default, no paths specified): ONLY report complexity introduced by this change. Pre-existing complexity is strictly out of scope.
-   - **Explicit path review** (user specified files/directories): Audit everything in scope.
-2. **Actually simpler alternative exists** - You must be able to describe the simpler approach
-3. **Simplification is safe** - Won't break functionality or lose important flexibility
-4. **Worth the churn** - Simplification benefit exceeds refactoring cost
-5. **Not a style preference** - Based on objective complexity metrics, not personal taste
+   - **Diff-based review** (default, no paths specified): ONLY report simplicity issues introduced by this change. Pre-existing complexity is strictly out of scope. The goal is reviewing the change, not auditing the codebase.
+   - **Explicit path review** (user specified files/directories): Audit everything in scope. Pre-existing complexity is valid to report.
+2. **Actually unnecessary** - The complexity must provide no value. If there's a legitimate reason (scale, requirements, constraints), it's not over-engineering. Check comments and context for justification before flagging.
+3. **Simpler alternative exists** - You must be able to describe a concrete simpler approach that would work. "This is complex" without a better alternative is not actionable.
+4. **Worth the simplification** - Trivial complexity (an extra variable, one level of nesting) isn't worth flagging. Focus on complexity that meaningfully increases cognitive load.
+5. **Matches codebase context** - A startup MVP can be simpler than enterprise software. A one-off script can be simpler than a shared library. Consider the context.
+6. **High confidence** - You must be certain this is unnecessary complexity. "This seems complex" is not sufficient. "This abstraction serves no purpose and could be replaced with X" is required.
 
-If a finding fails any criterion, either drop it or note it in "Minor Observations."
+If a finding fails any criterion, drop it entirely.
+
+**Key distinction from maintainability:**
+- **Maintainability** asks: "Is this well-organized for future changes?" (DRY, coupling, cohesion, consistency, dead code)
+- **Simplicity** asks: "Is this harder to understand than the problem requires?" (over-engineering, cognitive complexity, cleverness)
+
+**Rule of thumb:** If the issue is about **duplication, dependencies, or consistency across files**, it's maintainability. If the issue is about **whether this specific code is more complex than needed**, it's simplicity.
 
 ## Severity Calibration
 

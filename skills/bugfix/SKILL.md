@@ -136,6 +136,13 @@ For each hypothesis (in likelihood order):
 | Race condition | Check async operations, state mutations, timing |
 | Intermittent | Look for external dependencies, caching, timing |
 
+**General techniques:**
+- Read error messages and stack traces carefully
+- Check logs and debugging output
+- Examine data flow and state changes
+- Consider environmental factors (OS, versions, config)
+- Review recent commits for related changes (`git log --oneline -20`)
+
 ### 3.2 Log Format
 
 After each investigation step:
@@ -163,9 +170,43 @@ When root cause is found:
 
 If no hypothesis was confirmed but investigation revealed the actual cause, document the unexpected finding and proceed.
 
-## Phase 4: Fix
+## Phase 4: Test-First (When Applicable)
 
-### 4.1 Plan the Fix
+Before fixing, create a test that reproduces the bug when practical:
+
+### 4.1 Create Reproducing Test
+
+```
+- Find the most appropriate existing test file for the component
+- Create a minimal, focused test that reproduces the bug
+- Run the test to verify it fails as expected
+- If test passes, refine until it properly reproduces the issue
+```
+
+**Why test-first?**
+- Proves you understand the bug
+- Provides automatic verification when fix is applied
+- Prevents regression in the future
+- Documents the bug behavior
+
+**Skip test-first when:**
+- Bug is in UI/visual layer without existing test infrastructure
+- Environment-specific issue that can't be unit tested
+- Urgent hotfix where manual verification is sufficient (note in log)
+
+### 4.2 Document Test in Log
+
+```markdown
+## Reproducing Test
+
+**Test file**: {path}
+**Test name**: {description}
+**Status**: FAILS AS EXPECTED | SKIPPED (reason)
+```
+
+## Phase 5: Fix
+
+### 5.1 Plan the Fix
 
 Before implementing, document:
 
@@ -178,7 +219,7 @@ Before implementing, document:
 **Test strategy**: {how to verify}
 ```
 
-### 4.2 Implement Fix
+### 5.2 Implement Fix
 
 Apply the minimal fix:
 - Change only what's necessary
@@ -186,7 +227,7 @@ Apply the minimal fix:
 - Don't refactor unrelated code
 - Add comments if the fix isn't obvious
 
-### 4.3 Run Quality Gates
+### 5.3 Run Quality Gates
 
 ```bash
 # TypeScript: tsc --noEmit
@@ -194,7 +235,7 @@ Apply the minimal fix:
 # Lint: npm run lint (or project-specific)
 ```
 
-### 4.4 Handle Gate Failures
+### 5.4 Handle Gate Failures
 
 If gates fail after fix:
 1. Analyze if failure is related to fix or pre-existing
@@ -202,22 +243,34 @@ If gates fail after fix:
 3. If pre-existing: note in log, continue
 4. If stuck after 5 attempts: escalate with findings
 
-## Phase 5: Verify
+## Phase 6: Verify
 
-### 5.1 Reproduce Original Bug
+### 6.1 Run Reproducing Test
+
+If test was created in Phase 4:
+- Run the test that previously failed
+- If it passes → fix is verified
+- If it still fails → return to Phase 5 to adjust fix
 
 Attempt to reproduce the original bug:
 - If bug no longer reproduces → fix likely successful
 - If bug still reproduces → fix incomplete, return to Phase 3
 
-### 5.2 Check for Regression
+### 6.2 Manual Verification
+
+If no reproducing test exists:
+- Attempt to reproduce the original bug
+- If bug no longer reproduces → fix likely successful
+- If bug still reproduces → fix incomplete, return to Phase 3
+
+### 6.3 Check for Regression
 
 Verify the fix didn't break related functionality:
 - Run related tests
 - Check adjacent code paths
 - Consider edge cases
 
-### 5.3 Document Fix
+### 6.4 Document Fix
 
 Update investigation log:
 
@@ -236,7 +289,7 @@ Update investigation log:
 **Status**: FIXED | PARTIALLY FIXED | ESCALATED
 ```
 
-### 5.4 Report to User
+### 6.5 Report to User
 
 ```
 ## Bug Fix Complete
@@ -264,7 +317,16 @@ Update investigation log:
 ## Principles
 
 - **Write findings immediately** — investigation log is external memory
+- **Test-first when possible** — a reproducing test proves understanding
 - **One bug at a time** — don't fix unrelated issues
 - **Minimal fix** — change only what's necessary
 - **Verify thoroughly** — ensure fix works and doesn't regress
 - **Escalate when stuck** — don't spin indefinitely
+
+## Quality Standards
+
+- Tests must be deterministic and reliable
+- Fixes should be clean and maintainable
+- No introduction of new bugs or regressions
+- Clear comments explaining non-obvious fixes
+- Follow project coding standards and patterns
