@@ -9,7 +9,7 @@ Orchestrate comprehensive code review by running specialized review skills and c
 
 **Flags**:
 - `--autonomous` → no user prompts, run all applicable reviews, return consolidated report
-- `--skip <types>` → skip specific review types (comma-separated: bugs, types, maintainability, simplicity, coverage, docs, agents-md)
+- `--skip <types>` → skip specific review types (comma-separated: bugs, types, maintainability, simplicity, testability, coverage, docs, agents-md)
 - `--only <types>` → run only specific review types
 
 **Output**: Consolidated review report to user.
@@ -33,6 +33,7 @@ Determine which reviews to run based on scope and arguments:
 | Type Safety | `$review-type-safety` | TypeScript/typed Python detected |
 | Maintainability | `$review-maintainability` | Always (unless skipped) |
 | Simplicity | `$review-simplicity` | Always (unless skipped) |
+| Testability | `$review-testability` | Always (unless skipped) |
 | Coverage | `$review-coverage` | Test files exist in project |
 | Docs | `$review-docs` | Always (unless skipped) |
 | AGENTS.md | `$review-agents-md-adherence` | AGENTS.md file exists |
@@ -50,6 +51,7 @@ Determine which reviews to run based on scope and arguments:
 - [ ] Run type safety review (if applicable)
 - [ ] Run maintainability review
 - [ ] Run simplicity review
+- [ ] Run testability review
 - [ ] Run coverage review (if applicable)
 - [ ] Run docs review
 - [ ] Run AGENTS.md review (if applicable)
@@ -92,6 +94,11 @@ $review-maintainability {scope}
 $review-simplicity {scope}
 ```
 
+**Testability Review**:
+```
+$review-testability {scope}
+```
+
 **Coverage Review** (if tests exist):
 ```
 $review-coverage {scope}
@@ -110,7 +117,7 @@ $review-agents-md-adherence {scope}
 ### 2.3 Capture Findings
 
 From each review, extract issues with:
-- **Category**: bugs | type-safety | maintainability | simplicity | coverage | docs | agents-md
+- **Category**: bugs | type-safety | maintainability | simplicity | testability | coverage | docs | agents-md
 - **Severity**: Critical | High | Medium | Low
 - **Location**: file:line
 - **Description**: What the issue is
@@ -141,6 +148,7 @@ Combine all findings:
 | Type Safety | N | N | N | N |
 | Maintainability | N | N | N | N |
 | Simplicity | N | N | N | N |
+| Testability | N | N | N | N |
 | Coverage | N | N | N | N |
 | Docs | N | N | N | N |
 | AGENTS.md | N | N | N | N |
@@ -173,6 +181,7 @@ Combine all findings:
 | Type Safety | ✓ Complete | N |
 | Maintainability | ✓ Complete | N |
 | Simplicity | ✓ Complete | N |
+| Testability | ✓ Complete | N |
 | Coverage | ✓ Complete | N |
 | Docs | ✓ Complete | N |
 | AGENTS.md | ✓ Complete | N |

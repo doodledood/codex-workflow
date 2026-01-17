@@ -643,3 +643,6 @@ Avoid: empty catch, catch-return-null, silent fallbacks, broad catching.
 | No clear value | Merge or refocus |
 | Dependencies unclear | Make explicit, number |
 | Context missing | Add files + line numbers |
+| Alternative approach after draft | STOP. Back to 2.5. Document, ask, may restart |
+| "Obvious" location without checking consumers | STOP. Search usages. Multiple consumers → ask user |
+| User rejects approach during/after impl | Should have been asked earlier. Document lesson, present alternatives |
